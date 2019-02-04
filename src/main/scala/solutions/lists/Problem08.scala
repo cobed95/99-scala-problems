@@ -21,7 +21,8 @@ object Problem08 {
     def equiv(x: Symbol, y: Symbol): Boolean = x == y
   }
 
-  def compress[A](list: List[A])(implicit ord: Ord[A]): List[A] = {
+  // Direct solution.
+  def compressDirect[A](list: List[A])(implicit ord: Ord[A]): List[A] = {
     def consume(element: A, list: List[A]): List[A] =
       list match {
         case head :: tail if ord.equiv(element, head) => consume(element, tail)
@@ -31,13 +32,34 @@ object Problem08 {
 
     list match {
       case head :: tail =>
-        head :: compress(consume(head, tail))
+        head :: compressDirect(consume(head, tail))
       case Nil => Nil
     }
   }
 
+  // Attempt at polymorphism.
+  def handleDuplicates[A](list: List[A])
+                         (handler: (A, List[A]) => (Any, List[A])): List[Any] = {
+    list match {
+      case head :: tail =>
+        val handledPair = handler(head, tail)
+        handledPair._1 :: handleDuplicates(handledPair._2)(handler)
+      case Nil => Nil
+    }
+  }
+
+  def consume[A](element: A, list: List[A])(implicit ord: Ord[A]): (A, List[A]) =
+    list match {
+      case head :: tail if ord.equiv(element, head) => consume(element, tail)
+      case _ :: _ => (element, list)
+      case Nil => (element, Nil)
+    }
+
+  def compressPoly[A](list: List[A])(implicit ord: Ord[A]): List[Any] =
+    handleDuplicates(list)(consume)
+
   def test = {
     val fat = List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e)
-    println(compress(fat)(symbolOrd))
+    println(compressPoly(fat)(symbolOrd))
   }
 }
