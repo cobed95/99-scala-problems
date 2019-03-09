@@ -12,14 +12,9 @@ package solutions.lists
   * res0: List[Symbol] = List('a, 'b, 'c, 'a, 'd, 'e)
   */
 
-object Problem08 {
-  abstract class Ord[A] {
-    def equiv(x: A, y: A): Boolean
-  }
+import util.TypeClasses.{Ord, symbolOrd, DuplicateHandler}
 
-  implicit val symbolOrd: Ord[Symbol] = new Ord[Symbol] {
-    def equiv(x: Symbol, y: Symbol): Boolean = x == y
-  }
+object Problem08 {
 
   // Direct solution.
   def compressDirect[A](list: List[A])(implicit ord: Ord[A]): List[A] = {
@@ -38,28 +33,21 @@ object Problem08 {
   }
 
   // Attempt at polymorphism.
-  def handleDuplicates[A](list: List[A])
-                         (handler: (A, List[A]) => (Any, List[A])): List[Any] = {
-    list match {
-      case head :: tail =>
-        val handledPair = handler(head, tail)
-        handledPair._1 :: handleDuplicates(handledPair._2)(handler)
-      case Nil => Nil
-    }
+  def Consumer[A]: DuplicateHandler[A, A] = new DuplicateHandler[A, A] {
+    def handle(standard: A, list: List[A])(implicit ord: Ord[A]): (A, List[A]) =
+      list match {
+        case head :: tail if ord.equiv(standard, head) => handle(standard, tail)
+        case _ :: _ => (standard, list)
+        case Nil => (standard, Nil)
+      }
+
+    def convert(element: A): A = element
   }
 
-  def consume[A](element: A, list: List[A])(implicit ord: Ord[A]): (A, List[A]) =
-    list match {
-      case head :: tail if ord.equiv(element, head) => consume(element, tail)
-      case _ :: _ => (element, list)
-      case Nil => (element, Nil)
-    }
-
-  def compressPoly[A](list: List[A])(implicit ord: Ord[A]): List[Any] =
-    handleDuplicates(list)(consume)
+  def compress[A](list: List[A])(implicit ord: Ord[A]): List[A] = Consumer.compress(list)(ord)
 
   def test = {
     val fat = List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e)
-    println(compressPoly(fat)(symbolOrd))
+    println(compress(fat)(symbolOrd))
   }
 }
