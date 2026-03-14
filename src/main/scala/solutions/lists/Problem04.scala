@@ -9,13 +9,8 @@ package solutions.lists
   */
 
 object Problem04 {
-  def length[A](list: List[A]): Int = {
-    def lengthIter(n: Int, list: List[A]): Int =
-      list match {
-        case Nil => n
-        case _ :: tail => lengthIter(n + 1, tail)
-      }
-
-    lengthIter(0, list)
+  def length[A]: List[A] => Int = {
+    case Nil => 0
+    case _ :: tail => 1 + length(tail)
   }
 }

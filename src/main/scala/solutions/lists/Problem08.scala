@@ -11,43 +11,16 @@ package solutions.lists
   * scala> compress(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
   * res0: List[Symbol] = List('a, 'b, 'c, 'a, 'd, 'e)
   */
-
-import util.TypeClasses.{Ord, symbolOrd, DuplicateHandler}
-
 object Problem08 {
-
-  // Direct solution.
-  def compressDirect[A](list: List[A])(implicit ord: Ord[A]): List[A] = {
-    def consume(element: A, list: List[A]): List[A] =
-      list match {
-        case head :: tail if ord.equiv(element, head) => consume(element, tail)
-        case _ :: _ => list
-        case Nil => Nil
-      }
-
-    list match {
-      case head :: tail =>
-        head :: compressDirect(consume(head, tail))
-      case Nil => Nil
+  def compressIter[A](curr: A, li: List[A]): List[A] =
+    li match {
+      case hd :: tl if hd == curr => compressIter(hd, tl)
+      case hd :: tl => curr :: compressIter(hd, tl)
+      case Nil => curr :: Nil
     }
-  }
 
-  // Attempt at polymorphism.
-  def Consumer[A]: DuplicateHandler[A, A] = new DuplicateHandler[A, A] {
-    def handle(standard: A, list: List[A])(implicit ord: Ord[A]): (A, List[A]) =
-      list match {
-        case head :: tail if ord.equiv(standard, head) => handle(standard, tail)
-        case _ :: _ => (standard, list)
-        case Nil => (standard, Nil)
-      }
-
-    def convert(element: A): A = element
-  }
-
-  def compress[A](list: List[A])(implicit ord: Ord[A]): List[A] = Consumer.compress(list)(ord)
-
-  def test = {
-    val fat = List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e)
-    println(compress(fat)(symbolOrd))
+  def compress[A]: List[A] => List[A] = {
+    case Nil => Nil
+    case hd :: tl => compressIter(hd, tl)
   }
 }

@@ -1,5 +1,7 @@
 package solutions.lists
 
+import scala.annotation.tailrec
+
 /**
   * P05: Reverse a list.
   *
@@ -9,13 +11,12 @@ package solutions.lists
   */
 
 object Problem05 {
-  def reverse[A](list: List[A]): List[A] = {
-    def reverseIter(left: List[A], right: List[A]): List[A] =
-      right match {
-        case head :: tail => reverseIter(head :: left, tail)
-        case Nil => left
-      }
+  @tailrec
+  def reverseIter[A](result: List[A])(list: List[A]): List[A] =
+    list match {
+      case Nil => result
+      case head :: tail => reverseIter(head :: result)(tail)
+    }
 
-    reverseIter(Nil, list)
-  }
+  def reverse[A]: List[A] => List[A] = reverseIter(Nil)
 }

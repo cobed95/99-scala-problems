@@ -13,27 +13,14 @@ package solutions.lists
   * res0: List[(Int, Symbol)] = List((4, 'a), (1, 'b), (2, 'c), (1, 'd), (4, 'e))
   */
 
-import util.TypeClasses.{Ord, symbolOrd, DuplicateHandler}
-
 object Problem10 {
-  def Encoder[A]: DuplicateHandler[A, (Int, A)] = new DuplicateHandler[A, (Int, A)] {
-    def handle(standard: (Int, A), list: List[A])(implicit ord: Ord[A]): ((Int, A), List[A]) =
-      list match {
-        case head :: tail if ord.equiv(standard._2, head) =>
-          val newPair = (standard._1 + 1, standard._2)
-          handle(newPair, tail)
-        case _ =>
-          (standard, list)
-      }
+  def folder[A](acc: List[(Int, A)], curr: A): List[(Int, A)] =
+    acc match {
+      case (cnt, el) :: tl if el == curr => (cnt + 1, el) :: tl
+      case hd :: tl => (1, curr) :: hd :: tl
+      case Nil => (1, curr) :: Nil
+    }
 
-    def convert(element: A): (Int, A) = (1, element)
-  }
-
-  def encode[A](list: List[A])(implicit ord: Ord[A]): List[(Int, A)] =
-    Encoder.compress(list)(ord)
-
-  def test = {
-    val fat = List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e)
-    println(encode(fat)(symbolOrd))
-  }
+  def encode[A](li: List[A]): List[(Int, A)] =
+    Problem05.reverse(li.foldLeft(List[(Int, A)]())(folder))
 }

@@ -11,28 +11,17 @@ package solutions.lists
   * res0: List[List[Symbol]] = List(List('a, 'a, 'a, 'a), List('b), List('c, 'c), List('a, 'a), List('d), List('e, 'e, 'e, 'e))
   */
 
-
-import util.TypeClasses.{Ord, symbolOrd, DuplicateHandler}
-
 object Problem09 {
-  def Packer[A]: DuplicateHandler[A, List[A]] = new DuplicateHandler[A, List[A]] {
-    def handle(standard: List[A], list: List[A])(implicit ord: Ord[A]): (List[A], List[A]) =
-      list match {
-        case head :: tail if ord.equiv(standard.head, head) =>
-          handle(head :: standard, tail)
-        case _ :: _ =>
-          (standard, list)
-        case Nil => (standard, Nil)
+  def folder[A](acc: List[List[A]], curr: A): List[List[A]] =
+    acc match {
+      case packed :: tl => packed match {
+        case hd :: _ if hd == curr => (curr :: packed) :: tl
+        case _ :: _ => List(curr) :: packed :: tl
+        case Nil => List(curr) :: tl
       }
+      case Nil => List(curr) :: Nil
+    }
 
-    def convert(element: A): List[A] = List(element)
-  }
-
-  def pack[A](list: List[A])(implicit ord: Ord[A]): List[List[A]] =
-    Packer.compress(list)(ord)
-
-  def test = {
-    val fat = List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e)
-    println(pack(fat)(symbolOrd))
-  }
+  def pack[A](li: List[A]): List[List[A]] =
+    Problem05.reverse(li.foldLeft(List[List[A]]())(folder))
 }

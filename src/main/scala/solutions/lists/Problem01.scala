@@ -9,10 +9,9 @@ package solutions.lists
   */
 
 object Problem01 {
-  def last[A](list: List[A]): Option[A] =
-    list match {
-      case head :: Nil => Some(head)
-      case _ :: tail => last(tail)
-      case _ => None
-    }
+  def last[A]: List[A] => Option[A] = {
+    case head :: Nil => Some(head)
+    case _ :: tail => last(tail)
+    case _ => None
+  }
 }

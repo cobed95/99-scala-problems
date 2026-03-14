@@ -9,11 +9,10 @@ package solutions.lists
   */
 
 object Problem03 {
-  def nth[A](n: Int, list: List[A]): Option[A] =
-    list match {
-      case _ :: tail if n > 0 => nth(n - 1, tail)
-      case head :: _ if n == 0 => Some(head)
-      case Nil => None
-      case _ if n < 0 => None
-    }
+  def nth[A]: (Int, List[A]) => Option[A] = {
+    case (n, _) if n < 0 => None
+    case (n, head :: _) if n == 0 => Some(head)
+    case (n, _ :: tail) => nth(n - 1, tail)
+    case (_, Nil) => None
+  }
 }

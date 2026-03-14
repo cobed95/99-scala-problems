@@ -9,18 +9,8 @@ package solutions.lists
   */
 
 object Problem07 {
-  def flatten(list: List[Any]): List[Any] =
-    list match {
-      case head :: tail if head.isInstanceOf[List[Any]] =>
-        val nested = head.asInstanceOf[List[Any]]
-        flatten(nested) ::: flatten(tail)
-      case head :: tail =>
-        head :: flatten(tail)
-      case Nil => Nil
-    }
-
-  def test = {
-    val nested = List(List(1, 1), 2, List(3, List(5, 8)))
-    println(flatten(nested))
+  def flatten(li: List[Any]): List[Any] = li flatMap {
+    case nested: List[_] => flatten(nested)
+    case hd => List(hd)
   }
 }

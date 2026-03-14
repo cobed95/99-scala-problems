@@ -9,11 +9,10 @@ package solutions.lists
   */
 
 object Problem02 {
-  def penultimate[A](list: List[A]): Option[A] =
-    list match {
-      case first :: _ :: Nil => Some(first)
-      case _ :: Nil => None
-      case _ :: tail => penultimate(tail)
-      case _ => None
-    }
+  def penultimate[A]: List[A] => Option[A] = {
+    case head :: _ :: Nil => Some(head)
+    case _ :: Nil => None
+    case Nil => None
+    case _ :: tail => penultimate(tail)
+  }
 }
