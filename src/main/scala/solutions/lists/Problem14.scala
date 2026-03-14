@@ -9,5 +9,8 @@ package solutions.lists
   */
 
 object Problem14 {
-  def duplicate[A](list: List[A]): List[A] = ???
+  def duplicate[A]: List[A] => List[A] = {
+    case Nil => Nil
+    case hd :: tl => hd :: hd :: duplicate(tl)
+  }
 }
