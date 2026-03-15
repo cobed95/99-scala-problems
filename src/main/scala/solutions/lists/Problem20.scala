@@ -12,5 +12,12 @@ package solutions.lists
   */
 
 object Problem20 {
-  def removeAt[A](n: Int, list: List[A]): (List[A], A) = ???
+  def removeAt[A]: (Int, List[A]) => (List[A], Option[A]) = {
+    case (_, Nil) => (Nil, None)
+    case (n, hd :: tl) if n <= 0 => (tl, Some(hd))
+    case (n, hd :: tl) =>
+      removeAt(n - 1, tl) match {
+        case (li, el) => (hd :: li, el)
+      }
+  }
 }
