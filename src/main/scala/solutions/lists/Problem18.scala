@@ -14,5 +14,10 @@ package solutions.lists
   */
 
 object Problem18 {
-  def slice[A](i: Int, k: Int, list: List[A]): List[A] = ???
+  def slice[A]: (Int, Int, List[A]) => List[A] = {
+    case (_, _, Nil) => Nil
+    case (i, k, _ :: tl) if i > 0 => slice(i - 1, k - 1, tl)
+    case (i, k, hd :: tl) if k > 0 => hd :: slice(i, k - 1, tl)
+    case (_, _, _ :: _) => Nil
+  }
 }
