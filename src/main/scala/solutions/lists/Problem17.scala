@@ -11,5 +11,11 @@ package solutions.lists
   */
 
 object Problem17 {
-  def split[A](n: Int, list: List[A]): (List[A], List[A]) = ???
+  def split[A]: (Int, List[A]) => (List[A], List[A]) = {
+    case (_, Nil) => (Nil, Nil)
+    case (n, hd :: tl) if n <= 0 =>
+      split(n, tl) match { case (l, r) => (l, hd :: r) }
+    case (n, hd :: tl) =>
+      split(n - 1, tl) match { case (l, r) => (hd :: l, r) }
+  }
 }
