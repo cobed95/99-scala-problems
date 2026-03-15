@@ -9,5 +9,9 @@ package solutions.lists
   */
 
 object Problem21 {
-  def insertAt[A](elem: A, n: Int, list: List[A]): List[A] = ???
+  def insertAt[A]: (A, Int, List[A]) => List[A] = {
+    case (el, _, Nil) => el :: Nil
+    case (el, i, li) if i <= 0 => el :: li
+    case (el, i, hd :: tl) => hd :: insertAt(el, i - 1, tl)
+  }
 }
