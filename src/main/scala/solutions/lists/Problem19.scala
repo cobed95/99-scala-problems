@@ -12,5 +12,13 @@ package solutions.lists
   */
 
 object Problem19 {
-  def rotate[A](n: Int, list: List[A]): List[A] = ???
+  def rotate[A](n: Int, list: List[A]): List[A] =
+   list match {
+     case Nil => Nil
+     case _ =>
+      val length = Problem04.length(list)
+      val mod = Math.floorMod(n, length)
+      val (left, right) = Problem17.split(mod, list)
+      right ::: left
+  }
 }
