@@ -9,5 +9,8 @@ package solutions.lists
   */
 
 object Problem22 {
-  def range(start: Int, end: Int): List[Int] = ???
+  def range: (Int, Int) => List[Int] = {
+    case (start, end) if start > end => Nil
+    case (start, end) => start :: range(start + 1, end)
+  }
 }
