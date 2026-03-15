@@ -9,5 +9,8 @@ package solutions.lists
   */
 
 object Problem24 {
-  def lotto(n: Int, m: Int): List[Int] = ???
+  def lotto(n: Int, m: Int): List[Int] = {
+    val range = Problem22.range(1, m)
+    Problem23.randomSelect(n, range)
+  }
 }
