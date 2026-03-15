@@ -9,5 +9,11 @@ package solutions.lists
   */
 
 object Problem16 {
-  def drop[A](n: Int, list: List[A]): List[A] = ???
+  def dropIter[A]: (Int, Int, List[A]) => List[A] = {
+    case (_, _, Nil) => Nil
+    case (n, m, _ :: tl) if n <= m => dropIter(n, 1, tl)
+    case (n, m, hd :: tl) => hd :: dropIter(n, m + 1, tl)
+  }
+
+  def drop[A](n: Int, list: List[A]): List[A] = dropIter(n, 1, list)
 }
