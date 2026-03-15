@@ -11,5 +11,6 @@ package solutions.lists
   */
 
 object Problem25 {
-  def randomPermute[A](list: List[A]): List[A] = ???
+  def randomPermute[A](list: List[A]): List[A] =
+    Problem23.randomSelect(Problem04.length(list), list)
 }
